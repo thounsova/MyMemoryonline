@@ -1,10 +1,10 @@
 package com.project.mymemory.controllers;
 
 import com.project.mymemory.dto.response.ApiResponse;
-import com.project.mymemory.dto.response.ErrorsException;
+import com.project.mymemory.repository.CategoryRepository;
 import com.project.mymemory.services.impl.MemoryServiceImpl;
 import com.project.mymemory.entitys.Memory;
-import com.project.mymemory.repository.MemoryRepository;
+import com.project.mymemory.entitys.Category;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.project.mymemory.dto.response.ErrorsException.notFound;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/memories")
@@ -20,7 +22,7 @@ import java.util.List;
 public class MemoryController {
 
     private final MemoryServiceImpl memoryServiceImpl;
-    private final MemoryRepository memoryRepository;
+    private final CategoryRepository categoryRepository;
 
     // GET ALL
     @GetMapping
@@ -28,7 +30,7 @@ public class MemoryController {
         List<Memory> memories = memoryServiceImpl.getAll();
 
         if (memories.isEmpty()) {
-            throw ErrorsException.notFound("Memory not found.");
+            throw notFound("Memory not found.");
         }
 
         return new ApiResponse<>(
@@ -38,8 +40,26 @@ public class MemoryController {
     }
 
     @PostMapping("/{userId}")
-    public ResponseEntity<ApiResponse<Memory>> createMemory(@PathVariable Long userId, @RequestBody Memory memory) {
-        Memory createdMemory = memoryServiceImpl.createMemory(userId, memory);
+    public ResponseEntity<ApiResponse<Memory>> create(
+            @PathVariable Long userId,
+            @RequestBody Memory memory
+    ) {
+        // 1. Get category name from JSON
+        String categoryName = memory.getCategory();
+
+        if (categoryName == null || categoryName.isBlank()) {
+            throw new RuntimeException("Category name is required");
+        }
+
+        // 2. Find by name
+        Category category = categoryRepository.findByName(categoryName)
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+
+        // 3. Set the category ID before saving
+        memory.setCategoryId(category.getId());
+
+        // 4. Save memory
+        Memory createdMemory = memoryServiceImpl.create(userId, memory);
 
         ApiResponse<Memory> response = new ApiResponse<>(
                 "Create memory successfully",
@@ -48,4 +68,5 @@ public class MemoryController {
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+
 }
