@@ -7,13 +7,14 @@ import java.util.List;
 public interface MemoryService {
     List<Memory> getAll();
 
+
     Memory getById(Long id);
 
-    Memory createMemory(Long userId, Memory memory);
+    Memory create(Long userId, Memory memory);
 
-    Memory updateMemory(Long userId, Long memoryId, Memory memory);
+    Memory update(Long userId, Long memoryId, Memory memory);
 
-    String deleteMemory(Long userId, Long memoryId);
+    String delete(Long userId, Long memoryId);
 
     List<Memory> getAllByUser(Long userId);
 }

@@ -33,7 +33,7 @@ public class MemoryServiceImpl implements MemoryService {
     }
 
     @Override
-    public Memory createMemory(Long userId, Memory memory) {
+    public Memory create(Long userId, Memory memory) {
         var user = userRepository.findById(userId)
                 .orElseThrow(() -> notFound("Unable to create memory. Please create your account. And try again."));
 
@@ -42,7 +42,7 @@ public class MemoryServiceImpl implements MemoryService {
     }
 
     @Override
-    public Memory updateMemory(Long userId, Long memoryId, Memory updated) {
+    public Memory update(Long userId, Long memoryId, Memory updated) {
         var memory = memoryRepository.findById(memoryId)
                 .orElseThrow(() -> notFound("Memory with this ID" + memoryId + "not found."));
 
@@ -58,14 +58,10 @@ public class MemoryServiceImpl implements MemoryService {
     }
 
     @Override
-    public String deleteMemory(Long userId, Long memoryId) {
+    public String delete(Long userId, Long memoryId) {
 
         var memory = memoryRepository.findById(memoryId)
                 .orElseThrow(() -> notFound("Memory not found."));
-
-        if (!memory.getUser().getId().equals(userId)) {
-            throw new RuntimeException("Unauthorized");
-        }
 
         memoryRepository.delete(memory);
 
