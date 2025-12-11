@@ -50,11 +50,10 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public String delete(Long id) {
+    public void delete(Long id) {
         var category = categoryRepository.findById(id)
                 .orElseThrow(() -> notFound("Category not found."));
         categoryRepository.delete(category);
 
-        return "Category deleted successfully.";
     }
 }

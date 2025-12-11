@@ -3,6 +3,8 @@ package com.project.mymemory.entitys;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +21,8 @@ public class User {
     // User fields
     private String fullname;
     private String username;
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email should be valid and contain @")
     private String email;
     private String password;
 //    private String role;

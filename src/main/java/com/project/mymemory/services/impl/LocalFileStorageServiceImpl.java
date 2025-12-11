@@ -6,10 +6,12 @@ import com.project.mymemory.services.FileStorageService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+
 import java.io.IOException;
 import java.nio.file.*;
 
 @Service
+@SuppressWarnings("unused")
 public class LocalFileStorageServiceImpl implements FileStorageService {
 
     private final Path storagePath;

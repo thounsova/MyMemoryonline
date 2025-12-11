@@ -1,12 +1,13 @@
 package com.project.mymemory.controllers;
 
+import com.project.mymemory.dto.request.ImageUrlRequestDto;
 import com.project.mymemory.dto.response.ApiResponse;
 import com.project.mymemory.dto.response.ImageResponseDto;
 import com.project.mymemory.services.impl.ImageServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.List;
 
@@ -15,24 +16,31 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ImageController {
 
-    private final ImageServiceImpl imageServiceImpl;
+    private final ImageServiceImpl imageServiceIml;
 
-    // Upload image
     @PostMapping("/upload")
     public ResponseEntity<ApiResponse<ImageResponseDto>> uploadImage(
-            @RequestParam(required = false) String url,
-            @RequestParam(required = false) MultipartFile file
+            @ModelAttribute ImageUrlRequestDto requestDto
     ) {
-        ImageResponseDto imageDto = imageServiceImpl.uploadImage(url, file);
-        ApiResponse<ImageResponseDto> response = new ApiResponse<>("Image uploaded successfully", imageDto);
+        ImageResponseDto imageDto = imageServiceIml.uploadImage(requestDto);
+
+        ApiResponse<ImageResponseDto> response = new ApiResponse<>(
+                "Image uploaded successfully",
+                imageDto
+        );
+
         return ResponseEntity.ok(response);
     }
 
-    // Get all images
     @GetMapping
-    public ResponseEntity<ApiResponse<List<ImageResponseDto>>> getAll() {
-        List<ImageResponseDto> images = imageServiceImpl.getAllImages();
-        ApiResponse<List<ImageResponseDto>> response = new ApiResponse<>("All images fetched successfully", images);
+    public ResponseEntity<ApiResponse<List<ImageResponseDto>>> getAllImages() {
+        List<ImageResponseDto> images = imageServiceIml.getAllImages();
+
+        ApiResponse<List<ImageResponseDto>> response = new ApiResponse<>(
+                "All images fetched successfully",
+                images
+        );
+
         return ResponseEntity.ok(response);
     }
 }

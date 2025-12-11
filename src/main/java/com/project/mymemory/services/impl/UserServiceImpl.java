@@ -35,9 +35,7 @@ public class UserServiceImpl implements UserService {
     // ===================== CREATE ===================== //
     @Override
     public User create(User request) {
-
         validateCreate(request);
-
         request.setPassword(passwordEncoder.encode(request.getPassword()));
         return userRepository.save(request);
     }
@@ -45,9 +43,7 @@ public class UserServiceImpl implements UserService {
     // ===================== UPDATE ===================== //
     @Override
     public User update(Long id, User request) {
-
         User existing = getById(id);
-
         validateUpdate(id, request);
 
         existing.setFullname(request.getFullname());
@@ -70,7 +66,15 @@ public class UserServiceImpl implements UserService {
 
     // ===================== VALIDATION ===================== //
 
+    private void validateEmailFormat(String email) {
+        if (email == null || !email.contains("@") || !email.endsWith(".com")) {
+            throw badRequest("Email must contain '@' and end with '.com'");
+        }
+    }
+
     private void validateCreate(User request) {
+        validateEmailFormat(request.getEmail());
+
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw badRequest("Email is already in use.");
         }
@@ -81,6 +85,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private void validateUpdate(Long id, User request) {
+        validateEmailFormat(request.getEmail());
 
         userRepository.findByEmail(request.getEmail()).ifPresent(existing -> {
             if (!existing.getId().equals(id)) {

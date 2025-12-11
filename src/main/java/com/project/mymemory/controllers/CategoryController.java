@@ -53,7 +53,7 @@ public class CategoryController {
     }
 
     // UPDATE BY ID
-    @PutMapping
+    @PutMapping ("/{id}")
     public ApiResponse<Category> update (
         @PathVariable Long id,
         @RequestBody Category updatedCategory
@@ -67,10 +67,8 @@ public class CategoryController {
     // DELETE
     @DeleteMapping("/{id}")
     public ApiResponse<String> delete(@PathVariable Long id) {
-        categoryServiceImpl.delete(id);
-        return new ApiResponse<>(
-                "Category deleted successfully",
-                null
-        );
+        categoryServiceImpl.delete(id); // delete the category
+        return new ApiResponse<>("Delete memory successfully", "Deleted category with id: " + id);
     }
+
 }

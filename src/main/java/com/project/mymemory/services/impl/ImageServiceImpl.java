@@ -1,5 +1,6 @@
 package com.project.mymemory.services.impl;
 
+import com.project.mymemory.dto.request.ImageUrlRequestDto;
 import com.project.mymemory.dto.response.ErrorsException;
 import com.project.mymemory.dto.response.ImageResponseDto;
 import com.project.mymemory.entitys.Image;
@@ -27,7 +28,10 @@ public class ImageServiceImpl implements ImageService {
     private final FileStorageService fileStorageService;
 
     @Override
-    public ImageResponseDto uploadImage(String url, MultipartFile file) {
+    public ImageResponseDto uploadImage(ImageUrlRequestDto requestDto) {
+
+        String url = requestDto.getUrl();
+        MultipartFile file = requestDto.getFile();
 
         if ((url == null || url.isBlank()) && (file == null || file.isEmpty())) {
             throw ErrorsException.badRequest("Please provide a file OR a valid URL.");
@@ -36,7 +40,7 @@ public class ImageServiceImpl implements ImageService {
         String finalUrl;
         String fileName = null;
 
-        // File upload
+        // Upload File
         if (file != null && !file.isEmpty()) {
             try {
                 finalUrl = fileStorageService.storeFile(file);
@@ -47,23 +51,24 @@ public class ImageServiceImpl implements ImageService {
                 throw ErrorsException.internal("Failed to upload file.");
             }
         }
-        // URL validation
+        // URL only
         else {
-            assert url != null;
             finalUrl = url.trim();
             try {
-                URL validatedUrl = new URL(finalUrl);
-                if (!validatedUrl.getProtocol().equals("http") && !validatedUrl.getProtocol().equals("https")) {
+                URL validated = new URL(finalUrl);
+                if (!validated.getProtocol().equals("http") &&
+                        !validated.getProtocol().equals("https")) {
+
                     throw ErrorsException.badRequest("URL must start with http:// or https://");
                 }
             } catch (MalformedURLException e) {
                 log.error("Invalid URL provided: {}", finalUrl);
-                throw ErrorsException.badRequest("Please provide a file OR a valid URL.");
+                throw ErrorsException.badRequest("Invalid URL format");
             }
             log.info("Using provided URL: {}", finalUrl);
         }
 
-        // Save to DB without builder
+        // Save to DB
         try {
             Image image = new Image();
             image.setUrl(finalUrl);
@@ -71,7 +76,9 @@ public class ImageServiceImpl implements ImageService {
             image.setCreatedAt(LocalDateTime.now());
 
             Image saved = imageRepository.save(image);
+
             return new ImageResponseDto(saved.getId(), saved.getUrl(), saved.getFileName());
+
         } catch (Exception e) {
             log.error("Failed to save image: {}", e.getMessage(), e);
             throw ErrorsException.internal("Failed to save image.");
