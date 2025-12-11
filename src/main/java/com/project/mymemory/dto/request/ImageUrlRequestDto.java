@@ -2,10 +2,12 @@ package com.project.mymemory.dto.request;
 
 import lombok.Data;
 import jakarta.validation.constraints.NotBlank;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 public class ImageUrlRequestDto {
 
     @NotBlank(message = "URL cannot be blank")
     private String url;
+    private MultipartFile file;
 }

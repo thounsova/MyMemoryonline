@@ -9,12 +9,8 @@ public interface MemoryService {
 
 
     Memory getById(Long id);
-
     Memory create(Long userId, Memory memory);
-
     Memory update(Long userId, Long memoryId, Memory memory);
-
     String delete(Long userId, Long memoryId);
-
     List<Memory> getAllByUser(Long userId);
 }
