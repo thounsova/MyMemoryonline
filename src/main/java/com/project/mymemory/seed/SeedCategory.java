@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@SuppressWarnings("unused")
 public class SeedCategory implements CommandLineRunner {
 
     private final CategoryRepository categoryRepository;
