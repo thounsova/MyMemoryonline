@@ -1,7 +1,6 @@
 package com.project.mymemory.controllers;
 
 import com.project.mymemory.dto.response.ApiResponse;
-import com.project.mymemory.entitys.Category;
 import com.project.mymemory.entitys.Memory;
 import com.project.mymemory.services.impl.MemoryServiceImpl;
 import lombok.RequiredArgsConstructor;
