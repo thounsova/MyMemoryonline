@@ -12,8 +12,7 @@ public interface MemoryService {
     Memory create(Long userId, Memory memory);
     Memory update(Long userId, Long memoryId, Memory memory);
     String delete(Long userId, Long memoryId);
-    List<Memory> getAllByUser(Long userId);
-    List<Memory> search(String keyword);
+
 
     // fuzzy search by user
 }
