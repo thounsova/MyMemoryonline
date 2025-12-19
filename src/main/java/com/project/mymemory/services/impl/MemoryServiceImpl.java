@@ -86,18 +86,5 @@ public class MemoryServiceImpl implements MemoryService {
 
 
 
-    @Override
-    public List<Memory> getAllByUser(Long userId) {
-        return memoryRepository.findByUserId(userId);
-    }
-
-    // ===== Simple Global Search =====
-    @Override
-    public List<Memory> search(String keyword) {
-        if (keyword == null || keyword.isBlank()) {
-            throw badRequest("Search keyword is required.");
-        }
-        return memoryRepository.searchByKeyword(keyword.trim());
-    }
 
 }
