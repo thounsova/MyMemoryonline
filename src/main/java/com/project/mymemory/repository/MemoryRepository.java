@@ -9,5 +9,4 @@ import java.util.List;
 public interface MemoryRepository extends JpaRepository<Memory, Long> {
     List<Memory> findByUserId(Long userId);
 
-    List<Memory> searchByKeyword(String trim);
 }
